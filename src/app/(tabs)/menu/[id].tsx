@@ -1,5 +1,7 @@
 import Button from "@/src/components/ButtonComponent";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { PizzaSize } from "@/src/components/types";
+import { useCart } from "@/src/providers/CartProviders";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import products from "../../../../assets/data/products";
@@ -7,17 +9,24 @@ import products from "../../../../assets/data/products";
 export const DefaultImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
-const sizes = ["S", "M", "L", "XL"];
+const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
 const ProductDeatailsScreen = () => {
   const { id } = useLocalSearchParams();
 
-  const [selectedSize, setSelectedSize] = useState("M");
+  const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
+  const { addItem } = useCart();
+  const router = useRouter();
 
   const product = products.find((p) => p.id.toString() == id);
 
   const addToCart = () => {
-    console.warn("adding to cart Selected Size", { selectedSize });
+    console.log("ADD TO CART PRESSED");
+    if (!product) {
+      return;
+    }
+    addItem(product, selectedSize);
+    router.push("/cart");
   };
 
   if (!product) {
@@ -36,6 +45,7 @@ const ProductDeatailsScreen = () => {
       <View style={styles.sizes}>
         {sizes.map((size) => (
           <Pressable
+            key={size}
             onPress={() => {
               setSelectedSize(size);
             }}
@@ -49,7 +59,6 @@ const ProductDeatailsScreen = () => {
                 styles.sizetext,
                 { color: selectedSize == size ? "black" : "gainsboro" },
               ]}
-              key={size}
             >
               {size}
             </Text>
