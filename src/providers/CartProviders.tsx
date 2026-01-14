@@ -52,10 +52,12 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     );
   };
 
-  const total = items.reduce(
+  const amt = items.reduce(
     (sum, item) => (sum += item.product.price * item.quantity),
     0
   );
+  const total = Math.floor(amt * 100) / 100;
+
   console.log(items);
   return (
     <CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
