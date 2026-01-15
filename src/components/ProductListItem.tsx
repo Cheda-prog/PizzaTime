@@ -14,7 +14,6 @@ type ProductlistItemProp = {
 const ProductlistItem = ({ product }: ProductlistItemProp) => {
   const segments = useSegments();
 
-  //console.log(product);
   return (
     <Link href={`./menu/${product.id}`} asChild>
       <Pressable style={styles.container}>

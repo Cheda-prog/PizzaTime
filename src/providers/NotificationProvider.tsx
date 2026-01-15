@@ -1,70 +1,59 @@
-/* import { PropsWithChildren, useEffect, useRef, useState } from 'react';
-import { registerForPushNotificationsAsync } from '@/src/lib/notifications';
-import { ExpoPushToken } from 'expo-  ';
-import * as Notifications from 'expo-notifications';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from './AuthProvider';
+import { registerForPushNotificationsAsync } from "@/src/lib/notifications";
+import { supabase } from "@/src/lib/supabase";
+import { useAuth } from "@/src/providers/AuthProviders";
+import * as Notifications from "expo-notifications";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
 });
 
 const NotificationProvider = ({ children }: PropsWithChildren) => {
-  const [expoPushToken, setExpoPushToken] = useState<String | undefined>();
+  const [expoPushToken, setExpoPushToken] = useState<string>();
+  const [notification, setNotification] =
+    useState<Notifications.Notification>();
 
   const { profile } = useAuth();
 
-  const [notification, setNotification] =
-    useState<Notifications.Notification>();
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<Notifications.Subscription | null>(null);
+  const responseListener = useRef<Notifications.Subscription | null>(null);
 
-  const savePushToken = async (newToken: string | undefined) => {
+  const savePushToken = async (newToken?: string) => {
+    if (!newToken) return;
+    if (!profile?.id) return; // ← THIS LINE FIXES THE CRASH
+
     setExpoPushToken(newToken);
-    if (!newToken) {
-      return;
-    }
-    // update the token in the database
+
     await supabase
-      .from('profiles')
+      .from("profiles")
       .update({ expo_push_token: newToken })
-      .eq('id', profile.id);
+      .eq("id", profile.id);
   };
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => savePushToken(token));
+    if (!profile?.id) return;
+
+    registerForPushNotificationsAsync().then(savePushToken);
 
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+      Notifications.addNotificationReceivedListener(setNotification);
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+      Notifications.addNotificationResponseReceivedListener(console.log);
 
     return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
+      notificationListener.current?.remove();
+      responseListener.current?.remove();
     };
-  }, []);
-
-  console.log('Push token: ', expoPushToken);
-  console.log('Notif: ', notification);
+  }, [profile?.id]);
 
   return <>{children}</>;
 };
 
 export default NotificationProvider;
- */

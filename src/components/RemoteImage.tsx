@@ -1,4 +1,4 @@
-import React, { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import { Image } from "react-native";
 import { supabase } from "../lib/supabase";
 

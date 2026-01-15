@@ -1,5 +1,6 @@
 import { useColorScheme } from "@/src/components/useColorScheme";
 import CartProvider from "@/src/providers/CartProviders";
+import NotificationProvider from "@/src/providers/NotificationProvider";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -62,14 +63,28 @@ function RootLayoutNav() {
       >
         <AuthProvider>
           <QueryProvider>
-            <CartProvider>
-              <Stack>
-                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-                <Stack.Screen name="(user)" options={{ headerShown: false }} />
-                <Stack.Screen name="cart" options={{ presentation: "modal" }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              </Stack>
-            </CartProvider>
+            <NotificationProvider>
+              <CartProvider>
+                <Stack>
+                  <Stack.Screen
+                    name="(admin)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(user)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="cart"
+                    options={{ presentation: "modal" }}
+                  />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+              </CartProvider>
+            </NotificationProvider>
           </QueryProvider>
         </AuthProvider>
       </StripeProvider>
