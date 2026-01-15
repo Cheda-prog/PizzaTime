@@ -39,7 +39,7 @@ export const createOrRetrieveProfile = async (req: Request) => {
       supabase_user_id: user.id,
     },
   });
-
+  console.log(customer);
   // Save the stripe_customer_id to the profile
   await supabaseClient
     .from('profiles')

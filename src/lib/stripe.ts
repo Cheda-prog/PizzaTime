@@ -10,19 +10,9 @@ const fetchPaymentSheetParams = async (amount: number) => {
     console.log('=== PAYMENT SHEET DEBUG ===');
     console.log('Amount:', amount);
     
-    // Get the anon key directly
-    const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON || "";
-    
     const { data, error } = await supabase.functions.invoke("payment-sheet", {
       body: { amount },
-      headers: {
-        Authorization: `Bearer ${supabaseAnonKey}`,
-      },
     });
-    
-    console.log('Edge Function Response:');
-    console.log('- Data:', data);
-    console.log('- Error:', error);
     
     if (error) {
       console.error("Supabase function error:", error);
@@ -39,7 +29,7 @@ const fetchPaymentSheetParams = async (amount: number) => {
     return null;
   } catch (err) {
     console.error("Exception in fetchPaymentSheetParams:", err);
-    Alert.alert("Error", "Failed to fetch payment sheet params: " + String(err));
+    Alert.alert("Error", "Failed to fetch payment sheet params");
     return null;
   }
 };
@@ -56,13 +46,6 @@ export const initialisePaymentSheet = async (amount: number) => {
 
   const { paymentIntent, publishableKey, customer, ephemeralKey } = params;
 
-  console.log("Params extracted:", {
-    hasPaymentIntent: !!paymentIntent,
-    hasPublishableKey: !!publishableKey,
-    hasCustomer: !!customer,
-    hasEphemeralKey: !!ephemeralKey,
-  });
-
   if (!paymentIntent || !publishableKey) {
     console.error("Missing required params");
     Alert.alert("Error", "Missing payment intent or publishable key");
@@ -76,8 +59,11 @@ export const initialisePaymentSheet = async (amount: number) => {
       paymentIntentClientSecret: paymentIntent,
       customerId: customer,
       customerEphemeralKeySecret: ephemeralKey,
+      allowsDelayedPaymentMethods: true,
+      returnURL: "pizzatime://stripe-redirect",
+      // This enables the "Save for future use" checkbox
       defaultBillingDetails: {
-        name: "Jane Doe",
+        name: "Customer",
       },
     });
     
