@@ -12,7 +12,9 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { Alert } from "react-native";
 import "react-native-reanimated";
+import { supabase } from "../lib/supabase";
 import AuthProvider from "../providers/AuthProviders";
 import QueryProvider from "../providers/QuaryProvider";
 
@@ -34,6 +36,33 @@ export default function RootLayout() {
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
+
+  useEffect(() => {
+    // Listen for auth state changes (including email verification)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event);
+
+      if (event === "SIGNED_IN" && session?.user?.email_confirmed_at) {
+        Alert.alert(
+          "Email Verified! ✅",
+          "Your email has been successfully verified!"
+        );
+      }
+
+      if (event === "USER_UPDATED" && session?.user?.email_confirmed_at) {
+        Alert.alert(
+          "Email Verified! ✅",
+          "Your email has been successfully verified!"
+        );
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
