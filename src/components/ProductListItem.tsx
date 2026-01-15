@@ -1,13 +1,13 @@
 import Color from "@/src/constants/Colors";
 import { Link, useSegments } from "expo-router";
 import { Image, Pressable, StyleSheet, Text } from "react-native";
-import { Product } from "../components/types";
+import { Tables } from "../database.types";
 
 export const DefaultImage =
   "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png";
 
 type ProductlistItemProp = {
-  product: Product;
+  product: Tables<"products">;
 };
 
 const ProductlistItem = ({ product }: ProductlistItemProp) => {

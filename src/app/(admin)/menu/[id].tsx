@@ -45,6 +45,9 @@ const ProductDeatailsScreen = () => {
   if (error) {
     return <Text>Failed to fetch </Text>;
   }
+  if (!product) {
+    return <Text>Product not found</Text>;
+  }
   return (
     <View style={styles.container}>
       <Stack.Screen

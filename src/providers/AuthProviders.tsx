@@ -45,7 +45,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
           .select("*")
           .eq("id", session.user.id)
           .single();
-        setProfile(data || null);
+        if (data && (data.group === "ADMIN" || data.group === "USER")) {
+          setProfile(data as Profile);
+        } else {
+          setProfile(null);
+        }
       }
     };
     fetchSession();
