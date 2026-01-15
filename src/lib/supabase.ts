@@ -25,4 +25,9 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     detectSessionInUrl: false,
   },
+  global: {
+    headers: {
+      'apikey': supabaseAnonKey, // Always include anon key as fallback
+    },
+  },
 });

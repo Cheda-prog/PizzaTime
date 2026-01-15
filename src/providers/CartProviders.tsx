@@ -1,3 +1,4 @@
+import { initialisePaymentSheet, openPaymentSheet } from "@/src/lib/stripe";
 import { randomUUID } from "expo-crypto";
 import { useRouter } from "expo-router";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
@@ -25,7 +26,7 @@ const CartContext = createContext<CartType>({
 
 const CartProvider = ({ children }: PropsWithChildren) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  console.log("PROVIDER ITEMS", items);
+  //console.log("PROVIDER ITEMS", items);
 
   /// mutations here
   const { mutate: insertOrder } = useInsertOrder();
@@ -71,8 +72,12 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   );
   const total = Math.floor(amt * 100) / 100;
 
-  const checkout = () => {
-    console.log("hi");
+  const checkout = async () => {
+    await initialisePaymentSheet(Math.floor(total * 100));
+    const payed = await openPaymentSheet();
+    if (!payed) {
+      return;
+    }
 
     insertOrder(
       {
