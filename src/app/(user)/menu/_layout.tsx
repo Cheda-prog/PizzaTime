@@ -1,12 +1,28 @@
 import Colors from "@/src/constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { Pressable } from "react-native";
 
 export default function MenuStack() {
+  const router = useRouter();
   return (
     <Stack
       screenOptions={{
+        headerLeft: () => (
+          <Pressable
+            onPress={() => router.back()} // go back one page
+            style={({ pressed }) => ({
+              marginLeft: 15,
+              opacity: pressed ? 0.5 : 1,
+            })}
+          >
+            <FontAwesome
+              name="arrow-left"
+              size={25}
+              color={Colors.light.tint}
+            />
+          </Pressable>
+        ),
         headerRight: () => (
           <Link href="/(admin)/menu/create" asChild>
             <Pressable>
