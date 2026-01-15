@@ -162,7 +162,7 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For support, email chedaalex6@gmail.comor open an issue on GitHub.
+For support, email chedaalex6@gmail.com
 
 ## Acknowledgments
 
@@ -170,4 +170,5 @@ For support, email chedaalex6@gmail.comor open an issue on GitHub.
 - Supabase for backend infrastructure
 - Expo for mobile development framework
 EOF
+
 
