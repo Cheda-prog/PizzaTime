@@ -1,8 +1,10 @@
 import { randomUUID } from "expo-crypto";
+import { useRouter } from "expo-router";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
-import { CartItem } from "../components/types";
+import { useInsertOrderItems } from "../api/die/order-items";
+import { useInsertOrder } from "../api/die/orders";
+import { CartItem, Tables } from "../components/types";
 
-import { Tables } from "../components/types";
 type Product = Tables<"products">;
 
 type CartType = {
@@ -10,18 +12,26 @@ type CartType = {
   addItem: (product: Product, size: CartItem["size"]) => void;
   updateQuantity: (itemID: string, amount: -1 | 1) => void;
   total: number;
+  checkout: () => void;
 };
 
-export const CartContext = createContext<CartType>({
+const CartContext = createContext<CartType>({
   items: [],
   addItem: () => {},
   updateQuantity: () => {},
   total: 0,
+  checkout: () => {},
 });
 
 const CartProvider = ({ children }: PropsWithChildren) => {
   const [items, setItems] = useState<CartItem[]>([]);
   console.log("PROVIDER ITEMS", items);
+
+  /// mutations here
+  const { mutate: insertOrder } = useInsertOrder();
+  const { mutate: insertOrderItems } = useInsertOrderItems();
+
+  const router = useRouter();
 
   const addItem = (product: Product, size: CartItem["size"]) => {
     // if already in cart, incriment quantity
@@ -61,9 +71,42 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   );
   const total = Math.floor(amt * 100) / 100;
 
-  console.log(items);
+  const checkout = () => {
+    console.log("hi");
+
+    insertOrder(
+      {
+        total,
+        status: "New",
+        // Add any other required fields from your orders table
+        // For example: user_id is already handled in useInsertOrder
+      },
+      {
+        onSuccess: saveOrderItems,
+      }
+    );
+  };
+
+  const saveOrderItems = (order: Tables<"orders">) => {
+    const orderItems = items.map((cartItem) => ({
+      order_id: order.id,
+      product_id: cartItem.product_id,
+      quantity: cartItem.quantity,
+      size: cartItem.size,
+    }));
+
+    insertOrderItems(orderItems, {
+      onSuccess() {
+        setItems([]);
+        router.push(`/(user)/orders/${order.id}`);
+      },
+    });
+  };
+  // console.log(items);
   return (
-    <CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
+    <CartContext.Provider
+      value={{ items, addItem, updateQuantity, total, checkout }}
+    >
       {children}
     </CartContext.Provider>
   );

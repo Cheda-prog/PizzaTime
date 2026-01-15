@@ -1,12 +1,12 @@
-import { useProduct } from "@/src/api/products";
+import { useProduct } from "@/src/api/die/products";
 import Button from "@/src/components/ButtonComponent";
+import RemoteImage from "@/src/components/RemoteImage";
 import { PizzaSize } from "@/src/components/types";
 import { useCart } from "@/src/providers/CartProviders";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -42,12 +42,17 @@ const ProductDeatailsScreen = () => {
   if (error) {
     return <Text>Failed to fetch </Text>;
   }
+  if (!product) {
+    return <Text>Product not found</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: product.name }} />
-      <Image
+      <RemoteImage
         style={styles.image}
-        source={{ uri: product.image || DefaultImage }}
+        path={product?.image}
+        fallback={DefaultImage}
       />
 
       <Text>Select Size</Text>

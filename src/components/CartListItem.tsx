@@ -1,10 +1,11 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { DefaultImage } from "../components/ProductListItem";
 import { CartItem } from "../components/types";
 import Colors from "../constants/Colors";
 import { useCart } from "../providers/CartProviders";
+import RemoteImage from "./RemoteImage";
 
 type CartListItemProps = {
   cartItem: CartItem;
@@ -14,8 +15,9 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
   const { updateQuantity } = useCart();
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: cartItem.product.image || DefaultImage }}
+      <RemoteImage
+        path={cartItem.product.image}
+        fallback={DefaultImage}
         style={styles.image}
         resizeMode="contain"
       />

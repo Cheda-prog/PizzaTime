@@ -3,9 +3,13 @@ import {
   useInsertProduct,
   useProduct,
   useUpdateProduct,
-} from "@/src/api/products";
+} from "@/src/api/die/products";
 import Button from "@/src/components/ButtonComponent";
 import { DefaultImage } from "@/src/components/ProductListItem";
+import { supabase } from "@/src/lib/supabase";
+import { decode } from "base64-arraybuffer";
+import { randomUUID } from "expo-crypto";
+import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -98,14 +102,15 @@ const CreateProductScreen = () => {
       onCreate();
     }
   };
-  const onCreate = () => {
+  const onCreate = async () => {
     if (!validateInput()) {
       return;
     }
 
+    const imagePath = await uploadImage();
     console.warn("Creating product: ", name);
     insertProduct(
-      { name, price: parseFloat(price), image },
+      { name, price: parseFloat(price), image: imagePath },
       {
         onSuccess: () => {
           resetFields();
@@ -115,14 +120,15 @@ const CreateProductScreen = () => {
     );
   };
 
-  const onUpdate = () => {
+  const onUpdate = async () => {
     if (!validateInput()) {
       return;
     }
     console.warn("Updating product", name);
+    const imagePath = await uploadImage();
     // save in DataBase
     updateProduct(
-      { id, name, price: parseFloat(price), image },
+      { id, name, price: parseFloat(price), image: imagePath },
       {
         onSuccess: () => {
           resetFields();
@@ -153,6 +159,31 @@ const CreateProductScreen = () => {
         onPress: onDelete,
       },
     ]);
+  };
+
+  const uploadImage = async () => {
+    if (!image?.startsWith("file://")) {
+      return;
+    }
+
+    const filePath = `${randomUUID()}.png`;
+
+    // Use the new File API
+    const file = new File(image);
+    const base64 = await file.base64();
+
+    const { data, error } = await supabase.storage
+      .from("Product-images")
+      .upload(filePath, decode(base64), {
+        contentType: "image/png",
+      });
+
+    if (error) {
+      console.error("Upload error:", error);
+      throw new Error(error.message);
+    }
+
+    return data?.path;
   };
 
   return (

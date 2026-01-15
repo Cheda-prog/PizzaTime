@@ -4,6 +4,7 @@ import { ActivityIndicator, View } from "react-native";
 import Button from "../components/ButtonComponent";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../providers/AuthProviders";
+
 const index = () => {
   const { session, loading, isAdmin } = useAuth();
 
@@ -15,9 +16,9 @@ const index = () => {
     return <Redirect href={"/sign-in"} />;
   }
 
-  /*if (!isAdmin) {
+  if (!isAdmin) {
     return <Redirect href={"/(user)"} />;
-  } */
+  }
   console.log("are we here?");
   return (
     <View style={{ flex: 1, justifyContent: "center", padding: 10 }}>

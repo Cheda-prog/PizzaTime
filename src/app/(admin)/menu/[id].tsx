@@ -1,4 +1,4 @@
-import { useProduct } from "@/src/api/products";
+import { useProduct } from "@/src/api/die/products";
 import { PizzaSize } from "@/src/components/types";
 import Colors from "@/src/constants/Colors";
 import { useCart } from "@/src/providers/CartProviders";
