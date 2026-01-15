@@ -148,27 +148,21 @@ Admins can:
 - Manage products
 - View order history
 
-## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Personal Implemetations 
+- Added Email Verification
+- Alerts user when succesful
+- doesn't let user sign in unless verified
 
-## License
+Things I learned
+Since this is my first time 
+-using react-native 
+-making an app
+-using expo 
+- Creating a production ready app
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support, email chedaalex6@gmail.com
-
-## Acknowledgments
-
-- Stripe for payment processing
-- Supabase for backend infrastructure
-- Expo for mobile development framework
-EOF
+Everything I coded was a completely new skill for me. I didn’t expect the process to take this long, but learning many of the libraries and components was steep and challenging. Through this project, I learned how an application should be structured, the different forms of abstraction for folders, and how useful these structures are for code reusability. I also learned how to use TypeScript—one of my favorite parts—because it makes JavaScript feel more like C++ by guaranteeing type safety. Additionally, I gained hands-on experience with useState and hooks, understanding how fundamental and extremely useful they are for managing state in React applications. Finally, I improved my understanding of arrow functions and async functions, which enhance readability, code style, and help prevent race conditions. It was alot of fun to learn how to do so much and I really learned alot more then I though I could in such a small period of time. In the comming days I will be removing alot of bugs I couldn't fix in time and adding more componets to flush out this application as much as possible.
 
 
+As to why I have submitted this so late yesterday was my Aunts birthday which i forgot/didn't know about and was unable to work on this project for the majority of the day. 
+ 
